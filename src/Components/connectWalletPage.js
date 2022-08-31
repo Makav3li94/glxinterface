@@ -50,7 +50,7 @@ function ConnectWalletPage() {
     <div>
       <div className="Title">
         <h1 className="navbar-logo">
-          <img src={logo} className="logo"></img> Autonity Uniswap
+          <img src={logo} className="logo"></img> GLX Swap
         </h1>
       </div>
 
@@ -75,7 +75,7 @@ function ConnectWalletPage() {
         alignItems="flex-end"
       >
         <p>
-          Clearmatics Autonity Uniswap | Get AUT for use in the bakerloo testnet{" "}
+        GLX Swap | Get AUT for use in the bakerloo testnet{" "}
           <a href="https://faucet.bakerloo.autonity.network/">here</a>
         </p>
       </Grid>

@@ -1,5 +1,6 @@
 import { Contract, ethers } from "ethers";
 import * as COINS from "./constants/coins";
+import {wethAddress} from './constants/chains'
 
 const ROUTER = require("./build/GLXSwapV2Router.json");
 const ERC20 = require("./build/ERC20.json");
@@ -104,7 +105,7 @@ export async function swapTokens(
 ) {
   const tokens = [address1, address2];
   const time = Math.floor(Date.now() / 1000) + 200000;
-  const deadline = ethers.BigNumber.from(time);
+  // const deadline = ethers.BigNumber.from(time);
 
   const amountIn = ethers.utils.parseEther(amount.toString());
   const amountOut = await routerContract.callStatic.getAmountsOut(
@@ -114,7 +115,8 @@ export async function swapTokens(
 
   const token1 = new Contract(address1, ERC20.abi, signer);
   await token1.approve(routerContract.address, amountIn);
-  const wethAddress = await routerContract.WETH();
+  // const wethAddress = await routerContract.WETH();
+  // cosnt wethAddress = wethAddress
 
   if (address1 === wethAddress) {
     // Eth -> Token
@@ -122,7 +124,6 @@ export async function swapTokens(
       amountOut[1],
       tokens,
       accountAddress,
-      deadline,
       { value: amountIn }
     );
   } else if (address2 === wethAddress) {
@@ -131,16 +132,14 @@ export async function swapTokens(
       amountIn,
       amountOut[1],
       tokens,
-      accountAddress,
-      deadline
+      accountAddress
     );
   } else {
     await routerContract.swapExactTokensForTokens(
       amountIn,
       amountOut[1],
       tokens,
-      accountAddress,
-      deadline
+      accountAddress
     );
   }
 }
@@ -161,8 +160,15 @@ export async function getAmountOut(
       ethers.utils.parseEther(amountIn),
       [address1, address2]
     );
-    const amount_out = ethers.utils.formatEther(values_out[1]);
-    return Number(amount_out);
+    await values_out.wait();
+    if (!values_out) {
+        throw new Error('Failed to approve transaction')
+    }
+    console.log("values_out " + values_out)
+    console.log(typeof values_out[0])
+    console.log("values_out " + values_out[1])
+    console.log("amount_out " + ethers.utils.formatEther(values_out[1]))
+    return Number(1);
   } catch {
     return false;
   }

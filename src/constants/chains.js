@@ -7,7 +7,7 @@ export const ChainId = {
 };
 
 export const routerAddress = new Map()
-routerAddress.set(ChainId.ROPSTEN, "0x162e6d2d39A82a36675A62ce5AC58c008006E446")
+routerAddress.set(ChainId.ROPSTEN, "0xF401364ADf12BAc5d95583058445458a82e859D7")
 
 export const wethAddress = new Map()
 wethAddress.set(ChainId.ROPSTEN, "0xc778417E063141139Fce010982780140Aa0cD5Ab")

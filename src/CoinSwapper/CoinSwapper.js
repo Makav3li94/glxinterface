@@ -250,9 +250,10 @@ function CoinSwapper(props) {
       setField2Value("");
     } else if (field1Value && coin1.address && coin2.address) {
       getAmountOut(coin1.address, coin2.address, field1Value, router).then(
-        (amount) => {if(amount !== false) setField2Value(amount.toFixed(7))}
+        (amount) => {if(amount !== false)  setField2Value(amount.toFixed(7))}
       );
     } else {
+
       setField2Value("");
     }
   }, [field1Value, coin1.address, coin2.address]);
@@ -418,7 +419,7 @@ function CoinSwapper(props) {
         alignItems="flex-end"
       >
         <p>
-          Clearmatics Autonity Uniswap | Get AUT for use in the bakerloo testnet{" "}
+        GLX Swap | Get AUT for use in the bakerloo testnet{" "}
           <a href="https://faucet.bakerloo.autonity.network/">here</a>
         </p>
       </Grid>

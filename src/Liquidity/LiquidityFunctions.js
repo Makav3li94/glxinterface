@@ -1,6 +1,6 @@
 import { Contract, ethers } from "ethers";
 import * as COINS from "../constants/coins";
-
+import {wethAddress} from '../constants/chains'
 import { fetchReserves } from "../ethereumFunctions";
 
 const ERC20 = require("../build/ERC20.json");
@@ -36,15 +36,22 @@ export async function addLiquidity(
   const amount2Min = ethers.utils.parseEther(amount2min.toString());
 
   const time = Math.floor(Date.now() / 1000) + 200000;
-  const deadline = ethers.BigNumber.from(time);
+  // const deadline = ethers.BigNumber.from(time);
 
   const token1 = new Contract(address1, ERC20.abi, signer);
   const token2 = new Contract(address2, ERC20.abi, signer);
 
-  await token1.approve(routerContract.address, amountIn1);
-  await token2.approve(routerContract.address, amountIn2);
-
-  const wethAddress = await routerContract.WETH();
+  const tk1 = await token1.approve(routerContract.address, amountIn1);
+  await tk1.wait();
+  if (!tk1) {
+      throw new Error('Failed to approve transaction')
+  }
+  const tk2 = await token2.approve(routerContract.address, amountIn2);
+  await tk2.wait();
+  if (!tk2) {
+      throw new Error('Failed to approve transaction')
+  }
+  // const wethAddress = await routerContract.WETH();
 
   console.log([
     address1,
@@ -53,8 +60,7 @@ export async function addLiquidity(
     Number(amountIn2),
     Number(amount1Min),
     Number(amount2Min),
-    account,
-    deadline,
+    account
   ]);
 
   if (address1 === wethAddress) {
@@ -65,7 +71,6 @@ export async function addLiquidity(
       amount2Min,
       amount1Min,
       account,
-      deadline,
       { value: amountIn1 }
     );
   } else if (address2 === wethAddress) {
@@ -76,21 +81,24 @@ export async function addLiquidity(
       amount1Min,
       amount2Min,
       account,
-      deadline,
       { value: amountIn2 }
     );
   } else {
     // Token + Token
-    await routerContract.addLiquidity(
+    const addl = await routerContract.addLiquidity(
       address1,
       address2,
       amountIn1,
       amountIn2,
       amount1Min,
       amount2Min,
-      account,
-      deadline
+      account
     );
+
+    await addl.wait();
+    if (!addl) {
+        throw new Error('Failed to approve addl')
+    }
   }
 }
 
@@ -122,9 +130,9 @@ export async function removeLiquidity(
   const amount2Min = ethers.utils.parseEther(amount2min.toString());
 
   const time = Math.floor(Date.now() / 1000) + 200000;
-  const deadline = ethers.BigNumber.from(time);
-
-  const wethAddress = await routerContract.WETH();
+  // const deadline = ethers.BigNumber.from(time);
+  console.log("THHHis is 1")
+  // const wethAddress = await routerContract.WETH();
   const pairAddress = await factory.pairs(address1, address2);
   const pair = new Contract(pairAddress, PAIR.abi, signer);
 
@@ -136,8 +144,7 @@ export async function removeLiquidity(
     Number(liquidity),
     Number(amount1Min),
     Number(amount2Min),
-    account,
-    deadline,
+    account
   ]);
 
   if (address1 === wethAddress) {
@@ -147,8 +154,8 @@ export async function removeLiquidity(
       liquidity,
       amount2Min,
       amount1Min,
-      account,
-      deadline
+      account
+   
     );
   } else if (address2 === wethAddress) {
     // Token + Eth
@@ -157,8 +164,7 @@ export async function removeLiquidity(
       liquidity,
       amount1Min,
       amount2Min,
-      account,
-      deadline
+      account
     );
   } else {
     // Token + Token
@@ -168,8 +174,7 @@ export async function removeLiquidity(
       liquidity,
       amount1Min,
       amount2Min,
-      account,
-      deadline
+      account
     );
   }
 }

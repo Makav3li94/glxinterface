@@ -66,7 +66,7 @@ function LiquidityDeployer(props) {
   const [signer, setSigner] = React.useState(getSigner(provider));
   const [account, setAccount] = React.useState(undefined); // This is populated in a react hook
   const [router, setRouter] = React.useState(
-    getRouter("0x162e6d2d39A82a36675A62ce5AC58c008006E446", signer)
+    getRouter("0xF401364ADf12BAc5d95583058445458a82e859D7", signer)
   );
   const [weth, setWeth] = React.useState(
     getWeth("0xc778417E063141139Fce010982780140Aa0cD5Ab", signer)
